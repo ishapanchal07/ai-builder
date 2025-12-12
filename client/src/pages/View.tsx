@@ -1,6 +1,6 @@
 import React from 'react'
 
-const Home = () => {
+const View = () => {
     return (
         <div>
             <h1>View</h1>

@@ -1,6 +1,6 @@
 import React from 'react'
 
-const Home = () => {
+const Community = () => {
     return (
         <div>
             <h1>Community</h1>
@@ -8,5 +8,4 @@ const Home = () => {
     )
 }
 
-export default Community 
-
+export default Community
