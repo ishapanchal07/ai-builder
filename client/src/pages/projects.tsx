@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate, useParams, Link } from 'react-router-dom';
 import type { Project } from '../types';
+
 import {
   ArrowBigDownDashIcon,
   EyeIcon,
@@ -14,8 +15,10 @@ import {
   TabletIcon,
   XIcon
 } from 'lucide-react';
+
 import Sidebar from '../components/Sidebar';
 import { dummyConversations, dummyProjects } from '../assets/assets';
+import ProjectPreview, { type ProjectPreviewRef } from '../components/ProjectPreview';
 
 const Projects = () => {
   const { projectId } = useParams();
@@ -29,6 +32,8 @@ const Projects = () => {
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
+
+  const previewRef = useRef<ProjectPreviewRef>(null)
 
   const fetchProject = async () => {
     const Project = dummyProjects.find((p) => p.id === projectId);
@@ -152,7 +157,7 @@ const Projects = () => {
       <div className='flex-1 flex overflow-auto'>
         <Sidebar isMenuOpen={isMenuOpen} project={project} setProject={(p) => setProject(p)} isGenerating={isGenerating} setIsGenerating={setIsGenerating}/>
         <div className='flex-1 p-2 pl-0'>
-            Project preview
+           <ProjectPreview ref={previewRef} project={project} isGenerating={isGenerating} device={device} />
         </div>
       </div>
     </div>
