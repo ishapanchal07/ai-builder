@@ -49,9 +49,22 @@ const Projects = () => {
   const saveProject = async () => {
 
   };
-  const dowanloadCode = ()=>{
+  // dowanloadCode ( index.html )
+  const dowanloadCode = () => {
+  const code = previewRef.current?.getCode() || project?.current_code || "";
+  if (!code.trim()) return;
 
-  }
+  const file = new Blob([code], { type: "text/html" });
+  const url = URL.createObjectURL(file);
+
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "index.html";
+  a.click();
+
+  URL.revokeObjectURL(url);
+};
+
   const togglePublish = async () => { 
 
   }
