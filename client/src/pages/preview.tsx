@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import { useParams } from "react-router-dom";
-import { dummyConversations } from "../assets/assets";
+import { dummyProjects } from "../assets/assets";
 import { Loader2Icon } from "lucide-react";
 import type { Project } from "../types";
 import ProjectPreview from "../components/ProjectPreview";
@@ -13,9 +13,8 @@ const Preview = () => {
     const fetchCode = async () => {
 
         setTimeout(() => {
-            const code = dummyConversations.find(
-                project => project.projectId === projectId
-            )?.content;
+             const code = dummyProjects.find(project=> project.id === projectId)?.
+        current_code;
 
             if (code) {
                 setCode(code);

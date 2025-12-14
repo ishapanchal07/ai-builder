@@ -1,10 +1,10 @@
 
 import { Route, Routes, useLocation } from 'react-router-dom'
 import Home from './pages/Home'
-import Pricing from './pages/pricing'
-import Projects from './pages/projects'
+import Pricing from './pages/Pricing'
+import Projects from './pages/Projects'
 import MyProjects from './pages/MyProjects'
-import Preview from './pages/preview'
+import Preview from './pages/Preview'
 import Community from './pages/Community'
 import View from './pages/View'
 import Navbar from './components/Navbar'
