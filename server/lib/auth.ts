@@ -16,7 +16,7 @@ export const auth = betterAuth({
   user: {
     deleteUser: {enabled: true}
   },
-  trustedOrigins: [process.env.BETTER_AUTH_URL!],
+  trustedOrigins:  process.env.NODE_ENV === 'production' ? TRUSTED_ORIGINS : ['http://localhost:5173'],
 baseURL: process.env.BETTER_AUTH_URL!,
 secret: process.env.BETTER_AUTH_SECRET!,
 advanced: {
