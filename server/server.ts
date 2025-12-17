@@ -4,21 +4,21 @@ import "dotenv/config"
 import { toNodeHandler } from "better-auth/node"
 import prisma from "./lib/prisma.js"
 import { auth } from "./lib/auth.js"
+import userRouter from "./routes/userRoutes.js"
 
 const app = express()
 const port = 3000
 
-// Middleware
 app.use(express.json())
 
-// CORS setup
-const coreOptions = {
+const corsOptions = {
   origin: process.env.TRUSTED_ORIGINS?.split(",") || ["http://localhost:5173"],
   credentials: true,
 }
-app.use(cors(coreOptions))
 
-// Better Auth endpoint
+app.use(cors(corsOptions))
+
+// Better Auth routes
 app.use("/api/auth", toNodeHandler(auth))
 
 // Test route
@@ -26,15 +26,23 @@ app.get("/", async (_req: Request, res: Response) => {
   try {
     const users = await prisma.user.findMany()
     res.json({ message: "Server is Live!", users })
-  } catch (err) {
-    console.error(err)
+  } catch (error) {
+    console.error(error)
     res.status(500).json({ error: "Something went wrong" })
   }
 })
 
-// Start server
+app.use(express.json({limit: '50mb'}))
+
+// Custom user routes
+app.use("/api/user", userRouter);
+
 app.listen(port, () => {
   console.log(`🚀 Server running at http://localhost:${port}`)
 })
 
-
+// Graceful shutdown
+process.on("SIGINT", async () => {
+  await prisma.$disconnect()
+  process.exit(0)
+})
