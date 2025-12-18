@@ -2,6 +2,7 @@ import { Loader2Icon } from 'lucide-react'
 import React, { useState } from 'react'
 
 const Home = () => {
+  //@ts-ignore
   const [input, setInput] = useState('')
   const [loading, setLoading] = useState(false)
 

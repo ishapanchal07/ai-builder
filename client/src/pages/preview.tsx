@@ -7,6 +7,7 @@ import ProjectPreview from "../components/ProjectPreview";
 
 
 const Preview = () => {
+    //@ts-ignore
     const { projectId, versionId } = useParams()
     const [code, setCode] = useState('');
     const [loading, setLoading] = useState(true);

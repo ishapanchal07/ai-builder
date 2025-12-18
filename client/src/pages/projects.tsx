@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useNavigate, useParams, Link } from 'react-router-dom';
 import type { Project } from '../types';
 
@@ -31,6 +31,7 @@ const Projects = () => {
   const [device, setDevice] = useState<'phone' | 'tablet' | 'desktop'>('desktop');
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  //@ts-ignore
   const [isSaving, setIsSaving] = useState(false);
 
   const previewRef = useRef<ProjectPreviewRef>(null)

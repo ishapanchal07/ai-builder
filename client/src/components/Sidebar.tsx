@@ -11,10 +11,11 @@ interface SidebarProps {
     setIsGenerating : (isGenerating: boolean)=> void;
 }
 
-const Sidebar = ({isMenuOpen, project, setProject, isGenerating, setIsGenerating} :
+const Sidebar = ({isMenuOpen, project, isGenerating, setIsGenerating} :
 SidebarProps) => {
     const messageRef = useRef<HTMLDivElement>(null)
     const [input, setInput] = useState('')
+    // @ts-ignore
     const handleRollback = async (versionId: string) => {
 
     }
