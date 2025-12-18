@@ -5,11 +5,10 @@ import { toNodeHandler } from "better-auth/node"
 import prisma from "./lib/prisma.js"
 import { auth } from "./lib/auth.js"
 import userRouter from "./routes/userRoutes.js"
+import projectRouter from "./routes/projectRoutes.js"
 
 const app = express()
 const port = 3000
-
-app.use(express.json())
 
 const corsOptions = {
   origin: process.env.TRUSTED_ORIGINS?.split(",") || ["http://localhost:5173"],
@@ -17,25 +16,20 @@ const corsOptions = {
 }
 
 app.use(cors(corsOptions))
+app.use(express.json({ limit: "50mb" }))
 
-// Better Auth routes
-app.use("/api/auth", toNodeHandler(auth))
+// ✅ FIXED Better Auth route
+app.use("/api/auth", toNodeHandler(auth.handler))
 
 // Test route
 app.get("/", async (_req: Request, res: Response) => {
-  try {
-    const users = await prisma.user.findMany()
-    res.json({ message: "Server is Live!", users })
-  } catch (error) {
-    console.error(error)
-    res.status(500).json({ error: "Something went wrong" })
-  }
+  const users = await prisma.user.findMany()
+  res.json({ message: "Server is Live!", users })
 })
 
-app.use(express.json({limit: '50mb'}))
-
-// Custom user routes
-app.use("/api/user", userRouter);
+// Custom routes
+app.use("/api/users", userRouter)
+app.use("/api/project", projectRouter)
 
 app.listen(port, () => {
   console.log(`🚀 Server running at http://localhost:${port}`)
