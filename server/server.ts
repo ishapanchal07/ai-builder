@@ -8,7 +8,7 @@ import userRouter from "./routes/userRoutes.js"
 import projectRouter from "./routes/projectRoutes.js"
 
 const app = express()
-const port = 3000
+const PORT = process.env.PORT || 3000;
 
 const corsOptions = {
   origin: process.env.TRUSTED_ORIGINS?.split(",") || ["http://localhost:5173"],
@@ -27,13 +27,15 @@ app.get("/", async (_req: Request, res: Response) => {
   res.json({ message: "Server is Live!", users })
 })
 
+
 // Custom routes
 app.use("/api/users", userRouter)
 app.use("/api/project", projectRouter)
 
-app.listen(port, () => {
-  console.log(`🚀 Server running at http://localhost:${port}`)
+app.listen(PORT, () => {
+  console.log(`🚀 Server running at http://localhost:${PORT}`)
 })
+
 
 // Graceful shutdown
 process.on("SIGINT", async () => {

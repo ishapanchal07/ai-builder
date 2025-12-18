@@ -1,14 +1,34 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { assets } from '../assets/assets';
 import { Link, useNavigate } from 'react-router-dom';
 import { authClient } from '@/lib/auth-client';
-import {UserButton} from '@daveyplate/better-auth-ui'
+import { UserButton } from '@daveyplate/better-auth-ui'
+import api from '@/configs/axios';
+import { toast } from 'sonner';
 
 const Navbar = () => {
   const [menuOpen, setMenuOpen] = React.useState(false);
-  const navigate = useNavigate();
+  const navigate = useNavigate()
+  const [credits, setCredits] = useState(0)
 
-  const {data: session} = authClient.useSession()
+  const { data: session } = authClient.useSession()
+  console.log("Session data:", session)
+
+  const getCredits = async () => {
+    try {
+      const { data } = await api.get(`/api/user/credits`);
+      setCredits(data.credits)
+    } catch (error: any) {
+      toast.error(error?.response?.data?.message || error.message)
+      console.log(error);
+    }
+  }
+
+  useEffect(() => {
+    if (session?.user) {
+      getCredits()
+    }
+  }, [session?.user])
 
 
   return (
@@ -32,12 +52,16 @@ const Navbar = () => {
         <div className="flex items-center gap-3">
           {!session?.user ? (
             <button onClick={() => navigate('/auth/signin')}
-            className="px-6 py-1.5 max-sm:text-sm bg-indigo-600 active:scale-95 hover:bg-indigo-700 transition rounded">
-            Get started
-          </button>
+              className="px-6 py-1.5 max-sm:text-sm bg-indigo-600 active:scale-95 hover:bg-indigo-700 transition rounded">
+              Get started
+            </button>
 
           ) : (
-            <UserButton size='icon'/>
+            <>
+              <button className='bg-white/10 px-5 py-1.5 text-xs sm:text-sm border text-gray-200 rounded-full'>
+                Credits :  <span className='text-indigo-300'>{credits}</span></button>
+              <UserButton size='icon' />
+            </>
           )
           }
           {/* Mobile Menu Button */}
