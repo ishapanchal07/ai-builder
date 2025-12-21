@@ -12,16 +12,11 @@ const Preview = () => {
     const [code, setCode] = useState('');
     const [loading, setLoading] = useState(true);
     const fetchCode = async () => {
-
-        setTimeout(() => {
-             const code = dummyProjects.find(project=> project.id === projectId)?.
-        current_code;
-
-            if (code) {
-                setCode(code);
-                setLoading(false)
-            }
-        }, 2000)
+        try {
+         const {data} = await api.get(`/api/project/preview/${projectId}`)
+        } catch (error) {
+            
+        }
     }
 
     useEffect(() => {

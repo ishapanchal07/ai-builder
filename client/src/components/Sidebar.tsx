@@ -6,6 +6,7 @@ import api from '@/configs/axios';
 import { toast } from 'sonner';
 
 
+
 interface SidebarProps {
     isMenuOpen: boolean;
     project: Project;
@@ -22,7 +23,7 @@ const Sidebar = ({ isMenuOpen, project, isGenerating, setIsGenerating }:
     const fetchProject = async () => {
         try {
             const { data } = await api.get(`/api/user/project/${project.id}`)
-            setProject(data.project)
+            setproject(data.project)
         } catch (error: any) {
             toast.error(error?.response?.data?.message || error.message);
             console.log(error);
@@ -36,7 +37,7 @@ const Sidebar = ({ isMenuOpen, project, isGenerating, setIsGenerating }:
             if (!confirm) return;
             setIsGenerating(true)
             const { data } = await api.get(`/api/project/rollback/${project.id}/${versionId}`);
-            const { data: data2 } = await api.get(`/api/user/rollback/${project.id}/${versionId}`);
+            const { data: data2 } = await api.get(`/api/user/project/${project.id}/${versionId}`);
             toast.success(data.message)
             setProject(data2.project)
             setIsGenerating(false)
