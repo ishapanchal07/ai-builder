@@ -1,6 +1,9 @@
 import React from 'react'
 import { appPlans } from '../assets/assets';
 import Footer from '../components/Footer';
+import { authClient } from '@/lib/auth-client';
+import { toast } from 'sonner';
+import api from '@/configs/axios';
 
 interface Plan {
     id: string;
@@ -12,9 +15,19 @@ interface Plan {
 }
 
 const Pricing = () => {
+    const { data: session } = authClient.useSession()
+
     const [plans] = React.useState<Plan[]>(appPlans);
 
     const handlePurchase = async (planId: string) => {
+        try {
+            if(!session?.user) return toast('Please login to purchase creadits')
+            const {data} = await api.post('/api/user/purchase-credits', {planId})
+            window.location.href = data.payment_link;
+        } catch (error: any) {
+            toast.error(error?.response?.data?.message || error.message);
+            console.log(error);
+        }
         console.log("Buying plan:", planId);
         // Add your payment flow logic here
     };
@@ -37,8 +50,7 @@ const Pricing = () => {
                             <div
                                 key={plan.id}
                                 className="p-6 bg-black/20 ring ring-indigo-950 mx-auto w-full max-w-sm rounded-lg
-                                           text-white shadow-lg hover:ring-indigo-500 transition-all duration-400"
-                            >
+                                           text-white shadow-lg hover:ring-indigo-500 transition-all duration-400">
                                 <h3 className="text-xl font-bold">{plan.name}</h3>
 
                                 <div className="my-2">
