@@ -4,7 +4,7 @@ import "dotenv/config"
 import { toNodeHandler } from "better-auth/node"
 import prisma from "./lib/prisma.js"
 import { auth } from "./lib/auth.js"
-import userRouter from "./routes/userRoutes.js"
+import userRoutes from "./routes/userRoutes.js"
 import projectRouter from "./routes/projectRoutes.js"
 
 const app = express()
@@ -29,7 +29,7 @@ app.get("/", async (_req: Request, res: Response) => {
 
 
 // Custom routes
-app.use("/api/users", userRouter)
+app.use("/api/user", userRoutes)
 app.use("/api/project", projectRouter)
 
 app.listen(PORT, () => {

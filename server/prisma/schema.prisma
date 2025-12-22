@@ -1,9 +1,6 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
+// ==============================
+// Prisma Generator & Datasource
+// ==============================
 generator client {
   provider = "prisma-client-js"
 }
@@ -13,43 +10,51 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// ==============================
+// User (Better Auth Compatible)
+// ==============================
 model User {
-  id            String @id
-  email         String
-  name          String
-  totalCreation Int    @default(0)
-  credits       Int    @default(20)
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
-  emailVerified Boolean   @default(false)
-  
+  id            String   @id @default(cuid())
+  email         String   @unique
+  name          String?
+  emailVerified Boolean  @default(false)
+  totalCreation Int      @default(0)
+  credits       Int      @default(20)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
   // Relations
-  projects WebsiteProject[]
-  sessions      Session[]
-  accounts      Account[]
+  projects     WebsiteProject[]
+  sessions     Session[]
+  accounts     Account[]
   transactions Transaction[]
 
   @@map("user")
 }
 
+// ==============================
+// Website Project
+// ==============================
 model WebsiteProject {
-  id                    String  @id @default(uuid())
+  id                    String   @id @default(uuid())
   name                  String
   initial_prompt        String
   current_code          String?
-  current_version_index String  @default("")
+  current_version_index String   @default("")
+  isPublished           Boolean  @default(false)
   userId                String
-  isPublished           Boolean @default(false)
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
 
   // Relations
+  user         User            @relation(fields: [userId], references: [id], onDelete: Cascade)
   conversation Conversation[]
   versions     Version[]
-  user         User           @relation(fields: [userId], references: [id])
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
 }
 
+// ==============================
+// Conversation
+// ==============================
 enum Role {
   user
   assistant
@@ -62,10 +67,12 @@ model Conversation {
   timestamp DateTime @default(now())
   projectId String
 
-  // Relations
   project WebsiteProject @relation(fields: [projectId], references: [id], onDelete: Cascade)
 }
 
+// ==============================
+// Version
+// ==============================
 model Version {
   id          String   @id @default(uuid())
   code        String
@@ -73,46 +80,52 @@ model Version {
   timestamp   DateTime @default(now())
   projectId   String
 
-  // Relations
   project WebsiteProject @relation(fields: [projectId], references: [id], onDelete: Cascade)
 }
 
+// ==============================
+// Transaction
+// ==============================
 model Transaction {
   id        String   @id @default(uuid())
-  isPaid    Boolean  @default(false)
   planId    String
   amount    Float
   credits   Int
+  isPaid    Boolean  @default(false)
   userId    String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  // Relations
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
+// ==============================
+// Session (Better Auth Required)
+// ==============================
 model Session {
-  id        String   @id
+  id        String   @id @default(cuid())
+  token     String   @unique
   expiresAt DateTime
-  token     String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  userId    String
   ipAddress String?
   userAgent String?
-  userId    String
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-  @@unique([token])
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
   @@index([userId])
   @@map("session")
 }
 
+// ==============================
+// Account (OAuth / Password)
+// ==============================
 model Account {
-  id                    String    @id
+  id                    String   @id @default(cuid())
   accountId             String
   providerId            String
   userId                String
-  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   accessToken           String?
   refreshToken          String?
   idToken               String?
@@ -120,15 +133,20 @@ model Account {
   refreshTokenExpiresAt DateTime?
   scope                 String?
   password              String?
-  createdAt             DateTime  @default(now())
-  updatedAt             DateTime  @updatedAt
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
   @@map("account")
 }
 
+// ==============================
+// Verification (Email / OTP)
+// ==============================
 model Verification {
-  id         String   @id
+  id         String   @id @default(cuid())
   identifier String
   value      String
   expiresAt  DateTime

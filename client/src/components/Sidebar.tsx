@@ -15,7 +15,7 @@ interface SidebarProps {
     setIsGenerating: (isGenerating: boolean) => void;
 }
 
-const Sidebar = ({ isMenuOpen, project, isGenerating, setIsGenerating }:
+const Sidebar = ({ isMenuOpen, project, setProject,isGenerating, setIsGenerating }:
     SidebarProps) => {
     const messageRef = useRef<HTMLDivElement>(null)
     const [input, setInput] = useState('')
@@ -23,7 +23,7 @@ const Sidebar = ({ isMenuOpen, project, isGenerating, setIsGenerating }:
     const fetchProject = async () => {
         try {
             const { data } = await api.get(`/api/user/project/${project.id}`)
-            setproject(data.project)
+            setProject(data.project)
         } catch (error: any) {
             toast.error(error?.response?.data?.message || error.message);
             console.log(error);

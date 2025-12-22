@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react'
 import type { Project } from '../types';
 import { Loader2Icon, PlusIcon, Trash2Icon } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { dummyProjects } from '../assets/assets';
 import Footer from '../components/Footer';
 import { toast } from 'sonner';
 import api from '@/configs/axios';
@@ -24,7 +23,7 @@ const MyProjects = () => {
       toast.error(error?.response?.data?.message || error.message)
     }
   };
-
+// @ts-ignore
   const deleteProject = async (projectId: string) => {
     try {
       const confirm = window.confirm('Are you  sure want to delete this project?');
