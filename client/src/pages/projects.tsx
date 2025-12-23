@@ -59,7 +59,7 @@ const Projects = () => {
     if(!code) return;
     setIsSaving(true);
     try {
-      const { data } = await api.put(`/api/priject/save/${projectId}`, {code});
+      const { data } = await api.put(`/api/project/save/${projectId}`, { code });
       toast.success(data.message)
     } catch (error: any)  {
       toast.error(error?.response?.data?.message || error.message);
@@ -85,15 +85,19 @@ const Projects = () => {
   };
 
   const togglePublish = async () => {
-     try {
-      const { data } = await api.get(`/api/user/pubilsh-toggle/${projectId}`);
-      toast.success(data.message)
-      setProject((prev)=> prev ? ({...prev, isPublished: !prev.isPublished}) : null)
-    } catch (error: any)  {
-      toast.error(error?.response?.data?.message || error.message);
-      console.log(error);
-    }
+  try {
+    const { data } = await api.get(
+      `/api/user/publish-toggle/${projectId}`
+    );
+    toast.success(data.message);
+    setProject(prev =>
+      prev ? { ...prev, isPublished: !prev.isPublished } : null
+    );
+  } catch (error: any) {
+    toast.error(error?.response?.data?.message || error.message);
   }
+};
+
   useEffect(() => {
     if (session?.user && !isPending) {
       fetchProject();
@@ -103,13 +107,19 @@ const Projects = () => {
     }
   }, [session?.user, isPending])
 
-  useEffect(() => {
-    if (project && !project.current_code) {
-      const intervalId = setInterval(fetchProject, 10000);
-      return () => clearInterval(intervalId)
-    }
+ useEffect(() => {
+  if (!projectId) return;
+
+  fetchProject();
+
+  const intervalId = setInterval(() => {
     fetchProject();
-  }, [project]);
+  }, 10000);
+
+  return () => clearInterval(intervalId);
+}, [projectId]);
+
+
 
   if (loading) {
     return (

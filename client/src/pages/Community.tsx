@@ -11,17 +11,17 @@ const Community = () => {
   const [projects, setProjects] = useState<Project[]>([]);
   const navigate = useNavigate();
 
-  const fetchProjects = async () => {
-    try {
-      const { data } = await api.get('/api/project/published');
-      setLoading(false);
-    } catch (error: any) {
-      console.log(error);
-      toast.error(error?.response?.data?.message || error.message);
-    }
-    };
+ const fetchProjects = async () => {
+  try {
+    const { data } = await api.get('/api/project/published');
+    setProjects(data.projects); 
+    setLoading(false);
+  } catch (error: any) {
+    console.log(error);
+    toast.error(error?.response?.data?.message || error.message);
+  }
+};
 
-  
 
   useEffect(() => {
     fetchProjects();
